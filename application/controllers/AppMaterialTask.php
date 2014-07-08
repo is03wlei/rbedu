@@ -19,9 +19,11 @@ class AppMaterialTask extends CI_Controller{
 	//show task list
 	public function show_task_list(){
 		
-		$sid = intval($this->input->post('studentid'));
-        $sid = 1;
-		$this->load->model('MaAssignManagement','MaAssignManagement');
+		$postinfo = file_get_contents("php://input");
+        echo $postinfo;
+        $tval = json_decode($postinfo);
+        $sid = $tval['studentid'];
+        $this->load->model('MaAssignManagement','MaAssignManagement');
 		$stasklist = $this->MaAssignManagement->get_student_assignment_by_sid($sid);
 		$this->load->model('TeacherManagement','TeacherManagement');
 		
@@ -65,11 +67,12 @@ class AppMaterialTask extends CI_Controller{
 	
 	//show detail list
 	public function show_task_detail(){
+		
+        $postinfo = file_get_contents("php://input");
+        $tval = json_decode($postinfo);
 	
-		$sid = intval($this->input->post('studentid'));
-		$maid = intval($this->input->post('taskid'));
-        $sid = 1;
-        $maid = 1;
+		$sid = intval($tval['studentid']);
+		$maid = intval($tval['taskid']);
 
 		$this->load->model('MaAssignManagement','MaAssignManagement');
 		$taskinfo = $this->MaAssignManagement->get_student_assignment_by_maid($sid, $maid);
@@ -127,17 +130,15 @@ class AppMaterialTask extends CI_Controller{
 	public function record_material_learning_status(){
 		
 		//studentId, Taskid , materialType, materialId, materialStatus
-		$sid = intval($this->input->post('studentid'));
-		$maid = intval($this->input->post('taskid'));
-		$matype = $this->input->post('materialtype');
-		$mid = intval($this->input->post('materialid'));
-		$mstatus = intval($this->input->post('materialstatus'));
+        $postinfo = file_get_contents("php://input");
+        $tval = json_decode($postinfo);
+	
+		$sid = intval($tval['studentid']);
+		$maid = intval($tval['taskid']);
+		$matype = $tval['materialtype'];
+		$mid = intval($tval['materialid']);
+		$mstatus = intval($tval['materialstatus']);
         
-        $sid = 1;
-        $maid = 1;
-        $matype = 'video';
-        $mid = 57;
-        $mstatus = 2;
 
         date_default_timezone_set('Asia/Shanghai');
 		$starttime = date("Y-m-d H:i:s",time()-420);

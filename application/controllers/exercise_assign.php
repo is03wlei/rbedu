@@ -54,12 +54,16 @@ class Exercise_assign extends CI_Controller{
     public function getProblems($KID,$ExerciseType,$ExerciseLevel,$pagenum,$retnum)
     {
         $this->load->model('ExerciseEdition','exerciseEdition');
-        $result=$this->exerciseEdition->get_exercise_by_limit_batch($KID,"sc",$ExerciseLevel,0,$retnum,$pagenum);
+        $result['problems']=$this->exerciseEdition->get_exercise_by_limit_batch($KID,$ExerciseType,$ExerciseLevel,0,$retnum,$pagenum);
+        $listnum=$this->exerciseEdition->get_exercise_count($KID,$ExerciseType,$ExerciseLevel);
+        $result['listnum']=$listnum;
         echo json_encode($result);
     }
 
     public function publish(){
         
+        $errorno=0;
+
         $kid = $this->input->post('KID');
         $kname = $this->input->post('KnowledgeName');
         $sgname = $this->input->post('GroupName');
@@ -81,7 +85,10 @@ class Exercise_assign extends CI_Controller{
 
         $this->load->model('ExAssignManagement','exassign');
         $this->exassign->add_exercise_assignment($kid, $kname, $tid, $ename, $gid, $sgname, $edes, $enum, $econtent);
-
+    
+        $ret['errorno']=$errorno;
+        //redirect('http://101.69.182.26:8080/exercise_assign/', 'refresh');
+        echo json_encode($ret);
         return 0; 
     }
 

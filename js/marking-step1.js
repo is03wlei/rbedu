@@ -17,16 +17,15 @@ $(document).ready(
 			$.ajax({
 				cache: false,
 				type: "POST",
-				//url:"/ExerciseRecordJudge/ajax_exercises/"+gradeNo+"/"+classNo,
-				url:'/ExerciseRecordJudge/ajax_exercises/2014',
-				data:{},	 
+				url:"/ExerciseRecordJudge/ajax_exercises/",
+				//url:'/ExerciseRecordJudge/ajax_exercises/2014',
+				data:{gradeNo:gradeNo,classNo:classNo},	 
 				async: false,
 				error: function(request) {
 					console.log(request)
 					//alert("发送请求失败！");
 				},
 				success: function(data) {
-					
 					var dataContent = JSON.parse(data);
 					console.log(dataContent);
 					if(dataContent.status == 0){

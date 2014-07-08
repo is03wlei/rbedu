@@ -32,10 +32,11 @@ class ExerciseRecordJudge extends CI_Controller{
     }
 
     //第一个页面通过ajax异步传输数据
-    public function ajax_exercises($studentGrade){
-        //$studentGrade = $this->input->post('grade');
-        //$studentClass = $this->input->post('class');
-        $studentClass = "一班";
+    //public function ajax_exercises($studentGrade, $studentClass){
+    public function ajax_exercises(){
+        $studentGrade = $this->input->post('gradeNo');
+        $studentClass = $this->input->post('classNo');
+        //$studentClass = "一班";
         $this->load->model("exassignManagement", "exerciseAssignment");
         $exercises = $this->exerciseAssignment->get_teacher_exercises_by_grade_class($studentGrade, $studentClass);
         $data = array();
@@ -49,21 +50,27 @@ class ExerciseRecordJudge extends CI_Controller{
             $data['status'] = 0;
         }
         $excis = array();
+        //HasReview=1这显示继续批阅
+        $HasReview = 0;
+        $type = 1;
         foreach($exercises as $exercise){
-            $HasReview = 0;
+            $exerciseIDs = @json_decode($exercise[0]->ExerciseContent);
+            foreach($exerciseIDs->ex as $exerciseID){
+                if($exerciseID->ExerciseType == "sq"){
+                    $type=0;
+                    break;
+                }
+            }
+            if($type == 1) continue;
             $students = $this->exerciseAssignment->get_exercise_assignment_complete_by_exercise_id($exercise->EAID);
-            //if($students == null) continue;
             $allCount = 0 ; $finishCount=0;
             foreach($students as $student){
-                //HasReview=1这显示继续批阅
-                if($HasReview==0 && $student->HasReviewed != 0){
-                    $HasReview == 1;
-                }
                 if($student->FinishTime != null){
                     ++$finishCount;
                 }
                 ++$allCount;
             }
+            $exercise->HasReview =  $HasReview;
             $exercise->finishCount = $finishCount;
             $exercise->allCount = $allCount;
             $exercise->HasReviewed = $HasReview; 
@@ -107,13 +114,17 @@ class ExerciseRecordJudge extends CI_Controller{
         $arr = array();
         foreach($exercises as $exc){
             $a = array();
-            //status>=2，说明此题已经判过
-            if($exc->Status >= 2 ){
+            //status=2，说明此题已经判过
+            if($exc->Status == 2 ){
                 continue;
             }
             $exer = $this->exerciseInfo->get_exercise_by_exercise_id($exc->EID);
-            //sc为主观题，为选择题,跳过选择题
-            if($exer[0]->ExerciseType != "sc"){
+            //sc为单选题，mc为多选题
+            if($exer[0]->ExerciseType == "sc" || $exer[0]->ExerciseType == "mc"){
+                continue;
+            }
+            //jq为判断题，bq为填空题
+            if($exer[0]->ExerciseType == "jq" || $exer[0]->ExerciseType == "bq"){
                 continue;
             }
             $a['EID'] = $exer[0]->EID;
@@ -132,6 +143,8 @@ class ExerciseRecordJudge extends CI_Controller{
         $data['eaid'] = $eaid;
         $data['exercises'] = $arr;
         $data['sitebar'] = "marking";
+        var_dump($arr);
+        exit;
         if( $flag == 1){
             $this->cismarty->assign($data);
             $this->cismarty->display('marking-step2.tpl');
@@ -168,10 +181,21 @@ class ExerciseRecordJudge extends CI_Controller{
         $this->load->model('exerciseedition', 'exerciseinfo');
         foreach($exerciseIDs->ex as $exerciseID){
             if($exerciseID->ExerciseType == "sc"){
-                $exerciseID->ExerciseType = "判断题";
-            }else{
-                $exerciseID->ExerciseType = "选择题";
+                $exerciseID->ExerciseType = "单选题";
             }
+            else if($exerciseID->ExerciseType == "mc"){
+                $exerciseID->ExerciseType = "多选题";
+            }
+            else if($exerciseID->ExerciseType == "jq"){
+                $exerciseID->ExerciseType = "判断题";
+            }
+            else if($exerciseID->ExerciseType == "bq"){
+                $exerciseID->ExerciseType = "填空题";
+            }
+            else if($exerciseID->ExerciseType == "sq"){
+                $exerciseID->ExerciseType = "简答题";
+            }
+
             $exerciseResults = $this->exerciseRecord->read_exercise_result_by_eaid_eid($exerciseID->EID, $eaid);
             
             $count = 0; $correctCount = 0;$scores = 0;
@@ -200,32 +224,48 @@ class ExerciseRecordJudge extends CI_Controller{
             $Acount=0; $AcorrectCount=0;
             $Bcount=0; $BcorrectCount=0;
             $Ccount=0; $CcorrectCount=0;
+            $Dcount=0; $DcorrectCount=0;
+            $Ecount=0; $EcorrectCount=0;
             foreach($es as $e){
                 ++$count;
                 if($e->IsCorrect == 1){
                     ++$correctCount;
                 }
                 $ee = $this->exerciseinfo->get_exercise_by_exercise_id($e->EID);
-                if($ee[0]->ExerciseType== "dc"){
+                if($ee[0]->ExerciseType== "sc"){
                     ++$Acount;
                     if($e->IsCorrect == 1){
                         ++$AcorrectCount;
                     }
-                    $e->ExerciseType = "选择题";
+                    $e->ExerciseType = "单选题";
                 }
-                else if($ee[0]->ExerciseType== "sc"){
+                else if($ee[0]->ExerciseType== "mc"){
                     ++$Bcount;
                     if($e->IsCorrect == 1){
                         ++$BcorrectCount;
                     }
-                    $e->ExerciseType = "填空题";
+                    $e->ExerciseType = "多选题";
                 }
-                else if($ee[0]->ExerciseType== "bc"){
+                else if($ee[0]->ExerciseType== "bq"){
                     ++$Ccount;
                     if($e->IsCorrect == 1){
                         ++$CcorrectCount;
                     }
+                    $e->ExerciseType = "填空题";
+                }
+                else if($ee[0]->ExerciseType== "sq"){
+                    ++$Dcount;
+                    if($e->IsCorrect == 1){
+                        ++$DcorrectCount;
+                    }
                     $e->ExerciseType = "简答题";
+                }
+                else if($ee[0]->ExerciseType== "jq"){
+                    ++$Ecount;
+                    if($e->IsCorrect == 1){
+                        ++$EcorrectCount;
+                    }
+                    $e->ExerciseType = "判断题";
                 }
             }
             if($Acount == 0){
@@ -242,6 +282,16 @@ class ExerciseRecordJudge extends CI_Controller{
                 $student->Cratio = 0;
             }else{
                 $student->Cratio = round($CcorrectCount/$Ccount*100, 2);
+            }
+            if($Dcount == 0){
+                $student->Dratio = 0;
+            }else{
+                $student->Dratio = round($DcorrectCount/$Dcount*100, 2);
+            }
+            if($Ecount == 0){
+                $student->Eratio = 0;
+            }else{
+                $student->Eratio = round($EcorrectCount/$Ecount*100, 2);
             }
             $student->exercises = $es;
         }

@@ -8,6 +8,12 @@ console.log('upload begin');
 $(document).ready(
 	function(){
 		
+		var tree = $('#tree').tree({
+			data:knowlageData,
+			openedIcon:"/images/f-icon.png",
+			closedIcon:"/images/f-icon.png"
+		});
+		
 		var fileName = '';
 		
 		var uploader = WebUploader.create({
@@ -23,7 +29,8 @@ $(document).ready(
 			pick: '#picker',
 
 			// 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
-			resize: false
+			resize: false,
+			fileSizeLimit: 1000000000
 		});
 		
 		// 当有文件添加进来的时候
@@ -33,6 +40,22 @@ $(document).ready(
 				'<p class="state">等待上传...</p>' +
 			'</div>' );
 			uploader.upload();
+		});
+		uploader.on( 'uploadProgress', function( file, percentage ) {
+			var $li = $( '#'+file.id ),
+				$percent = $li.find('.progress .progress-bar');
+
+			// 避免重复创建
+			if ( !$percent.length ) {
+				$percent = $('<div class="progress progress-striped active">' +
+				  '<div class="progress-bar" role="progressbar" style="width: 0%">' +
+				  '</div>' +
+				'</div>').appendTo( $li ).find('.progress-bar');
+			}
+
+			$li.find('p.state').text('上传中');
+
+			$percent.css( 'width', percentage * 100 + '%' );
 		});
 		uploader.on( 'uploadSuccess', function( file,response ) {
 			$('#file-error').hide();
@@ -100,23 +123,38 @@ $(document).ready(
 				return false;
 			}
 		}
+		var checkKnowledge = function(){
+			var knowledgeNode =  $('#tree').tree("getSelectedNode");
+			if(knowledgeNode){
+				$('#file-error-tree').hide();
+				return true;
+			}else{
+				$('#file-error-tree').show();
+				return false;
+			}
+		}
 		
 		var submitHandler = function(e){
-			if($('#material-info').validate().form() && checkFile()){
+			if($('#material-info').validate().form() && checkFile()&&checkKnowledge()){
 				var level = $('[name=level]:checked').attr('value');
+				var knowledgeNode =  $('#tree').tree("getSelectedNode");
 				var materialType = $('[name=materialType]:checked').attr('value');
 				$.ajax({
 					cache: false,
 					type: "POST",
 					url:"/material/publish",
-					data:{level:level,materialType:materialType,KID:1,KnowlegeName:'默认名称',title:$('#title').val(),description:$('#description').text(),url:fileName},	 
+					data:{level:level,materialType:materialType,KID:knowledgeNode.id,KnowlegeName:knowledgeNode.label,title:$('#title').val(),description:$('#description').text(),url:fileName},	 
 					async: false,
 					error: function(request) {
-						console.log(request)
+						
 						//alert("发送请求失败！");
 					},
 					success: function(data) {
-						console.log(data);
+						var dataContent = JSON.parse(data);
+						if(dataContent&&dataContent.errorno ==0){
+							alert('成功');
+							location.reload();
+						}
 						
 					}
 				});

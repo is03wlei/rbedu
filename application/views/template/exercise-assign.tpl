@@ -8,15 +8,14 @@
   <script type="text/javascript" src="../js/homework.js"></script>
   <script type="text/javascript" src="../js/page.js"></script>  
   <script type="text/javascript" src="../js/tree.jquery.js"></script>
-
+    <script type="text/javascript">
+        var knowlageData = {%$knowledgelist%};
+    </script>
 {%/block%}
 {%block name="content"%}
     <div id="main_wrapper" class="right-content">
 
     </div>
-    <script type="text/javascript">
-        var knowlageData = {%$knowledgelist%};
-    </script>
     <textarea id='students_page' style="display:none">
        <div class="step">
          <img alt="步骤" src="../images/buzhou01.png" />
@@ -64,12 +63,10 @@
           <th colspan="2">学生姓名</th>
         </tr>
         <#for(var i=0;i<list.length;i=i+2){#>
-            <#if(list[i]){#>
            <tr> 
-              <td><#-list[i].StudentName#></td>
-              <td><#-list[i+1].StudentName#></td>
+              <td><#-list[i]?list[i].StudentName:''#></td>
+              <td><#-list[i+1]?list[i+1].StudentName:''#></td>
            </tr>
-           <#}#>
         <#}#>
      </table>   
      </textarea>  

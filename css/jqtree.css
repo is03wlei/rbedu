@@ -44,7 +44,7 @@ ul.jqtree-tree .jqtree-element {
 }
 
 .jqtree-tree .jqtree-title {
-    color: #1C4257;
+    font-size: 14px;
     vertical-align: middle;
     margin-left: 1.5em;
 }

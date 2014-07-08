@@ -10,17 +10,15 @@
 	<div class="select">
 		<label>选择年级</label>
 		<select id="grade">
-			<option value="7">七年级</option>
-			<option value="8">八年级</option>
-			<option value="9">九年级</option>
+			<option value="2012">一年级</option>
 		</select>
 		&nbsp;&nbsp;&nbsp;
 		<label>选择班级</label>
 		<select id="class">
-			<option value="1">一班</option>
-			<option value="2">二班</option>
-			<option value="3">三班</option>
-			<option value="4">四班</option>
+			<option value="一班">一班</option>
+			<option value="二班">二班</option>
+			<option value="三班">三班</option>
+			<option value="四班">四班</option>
 		</select>
 	</div>
 	<div id="task-container" class="task-list">
@@ -47,9 +45,9 @@
 				<td><%=tmp.PublishTime%></td>
 				<td><%=tmp.finishCount%>/<%=tmp.allCount%></td>
 				<% if(tmp.finishCount){ %>
-				<td><a href="/ExerciseRecordJudge/judge/1">继续批阅</a></td>
+				<td><a href="/ExerciseRecordJudge/judge/<%=tmp.EAID%>">继续批阅</a></td>
 				<% }else{ %>
-				<td><a href="/ExerciseRecordJudge/judge/1">开始批阅</a></td>
+				<td><a href="/ExerciseRecordJudge/judge/<%=tmp.EAID%>">开始批阅</a></td>
 				<% } %>
 			</tr>
 			<% } %>

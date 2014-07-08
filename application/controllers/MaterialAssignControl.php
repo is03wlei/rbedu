@@ -523,7 +523,7 @@ class MaterialAssignControl extends CI_Controller{
 			$retlist['currentpage'] = $pn;
 			$retlist['itemlist'] = array();
 		}else{
-			$vlist = $this->VideoEdition->get_video_by_limit_batch($tkid, 'flv', 0, $rn, $pn*10);
+			$vlist = $this->VideoEdition->get_video_by_limit_batch($tkid, 'mp4', 0, $rn, $pn*10);
 			
 			$retlist['sumpage'] = intval($allcount/10)+1;
 			$retlist['currentpage'] = $pn;

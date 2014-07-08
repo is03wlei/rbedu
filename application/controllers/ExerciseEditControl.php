@@ -98,33 +98,34 @@ class ExerciseEditControl extends CI_Controller{
 		$eid = $this->ExerciseEdition->create_exercise($kid, $tid, $exerciseCreateTime, $exerciseLevel, $exerciseType, "0", 5, "default.jpg", "default.jpg", $answerNumber, "default.jpg", $answerContentCharacter);
 		
 		//get picture path
-		$pichomepath = '/home/work/YfWebSource/upload/excercise_pic';
-		$picfilepath = $this->_get_picture_path($pichomepath, $eid);
+		$pichomepath = '/home/work/YfWebSource';
+        $picrelpath = '/upload/exercise_pic/';
+		$picfilepath = $this->_get_picture_path($pichomepath, $picrelpath, $eid);
 		
 		$titlefilename = "E".$eid."_title.jpg";
 		$contentfilename = "E".$eid."_content.jpg";
 		$answerfilename = "E".$eid."_answer.jpg";
 
 		//do upload picture
-		$exerciseTitlePath = $pichomepath."/default_title.jpg";
-		$exerciseContentPath = $pichomepath."/default_content.jpg";;
-		$answerContentPicturePath = $pichomepath."/default_answer.jpg";;
+		$exerciseTitlePath = $picrelpath."/default_title.jpg";
+		$exerciseContentPath = $picrelpath."/default_content.jpg";;
+		$answerContentPicturePath = $picrelpath."/default_answer.jpg";;
 	
         if($this->input->post('exercisetitlepic') != FALSE){
                 $etpicpath = '/home/work/YfWebSource/upload/'.$this->input->post('exercisetitlepic');
-                rename($etpicpath, $picfilepath."/".$titlefilename);
+                rename($etpicpath, $pichomepath."/".$picfilepath."/".$titlefilename);
                 $exerciseTitlePath = $picfilepath."/".$titlefilename;
         }
 
         if($this->input->post('exercisecontentpic') != FALSE){
                 $ecpicpath = '/home/work/YfWebSource/upload/'.$this->input->post('exercisecontentpic');
-                rename($ecpicpath, $picfilepath."/".$contentfilename);
+                rename($ecpicpath, $pichomepath."/".$picfilepath."/".$contentfilename);
                 $exerciseContentPath = $picfilepath."/".$contentfilename;
         }
 
         if($this->input->post('exerciseanswerpic') != FALSE){
                 $eapicpath = '/home/work/YfWebSource/upload/'.$this->input->post('exerciseanswerpic');
-                rename($eapicpath, $picfilepath."/".$answerfilename);
+                rename($eapicpath, $pichomepath."/".$picfilepath."/".$answerfilename);
                 $answerContentPicturePath = $picfilepath."/".$answerfilename;
         }
 
@@ -210,7 +211,7 @@ class ExerciseEditControl extends CI_Controller{
 	}
 	
 	//give picture path
-	private function _get_picture_path($pichomepath, $picid){
+	private function _get_picture_path($pichomepath, $picrelpath, $picid){
 		
 		$picfilepath = "";
 		$idval = intval($picid);
@@ -218,12 +219,12 @@ class ExerciseEditControl extends CI_Controller{
 		$l1_id = intval($idval/(1024*1024));
 		$l2_id = intval($idval/1024);
 		
-		$picfilepath = $pichomepath.'/'.$l1_id.'/'.$l2_id;
+		$picfilepath = $pichomepath.'/'.$picrelpath."/".$l1_id.'/'.$l2_id;
 		if(!file_exists($picfilepath)){	
             mkdir($picfilepath,0777,TRUE);
 		}
 		
-		return $picfilepath;
+		return $picrelpath."/".$l1_id.'/'.$l2_id;
 	}
 	
 }

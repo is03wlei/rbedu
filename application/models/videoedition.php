@@ -89,10 +89,10 @@ class VideoEdition extends CI_Model{
 				'Description' => $vdescription,
 				'SourceURI' => $vurl
 		);
-		var_dump($videoinfo);
+        //var_dump($videoinfo);
 		$this->_db->insert('VideoMaterialInfo', $videoinfo);
 		$vid = $this->_db->insert_id();
-        var_dump($vid);
+        //var_dump($vid);
 		return $vid;
 	}
 	

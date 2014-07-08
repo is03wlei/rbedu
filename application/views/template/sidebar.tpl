@@ -2,9 +2,9 @@
 	<div class="jiaoxue">
 		<h2 class="list-title">教学管理</h2>
 		<ul>
-			<li>作业发布</li>
+			<li class="{%if $sitebar eq 'exercise_assign'%}current{%/if%}" onclick="location.href='/exercise_assign'">作业发布</li>
 			<li class="{%if $sitebar eq 'marking'%}current{%/if%}" onclick="location.href='/ExerciseRecordJudge'">作业批阅</li>
-			<li>课件发布</li>
+			<li class="{%if $sitebar eq 'material-publish'%}current{%/if%}" onclick="location.href='/MaterialAssignControl/show_teacher_group'">课件发布</li>
 		</ul>
 	</div>
 	<div class="ziliao">

@@ -45,6 +45,7 @@ class Material extends CI_Controller{
 
         #var_dump($teacher);
         #return 0;
+        $errorno=0;
        
         $subject=$teacher[0]->TeacherSubject;
         $videoLength = 100;
@@ -59,6 +60,8 @@ class Material extends CI_Controller{
             $this->documentEdition->create_document($kid,$knowledgeName,$subject,$tid,$level,$materialType,$title,$description,$url);
         }
 
+        $ret['errorno']=$errorno;
+        echo json_encode($ret);
         return 0; 
     }
 

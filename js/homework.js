@@ -15,7 +15,7 @@ var config = {
     // 页码
     pagenum: 0,
     // 单页返回结果数
-    listnum: 3,
+    result_num: 5,
     //选择的题目编号
     eids: {},
     //知识点名称
@@ -78,18 +78,10 @@ function initFirstPage() {
  */
 function initTree() {
     var teacherId = null;
-    var tree = $('#tree').tree({
+    window.tree = $('#tree').tree({
         data: knowlageData,
         openedIcon: "/images/f-icon.png",
-        closedIcon: "/images/f-icon.png",
-        callback: {
-            onchange: function(node, tree_obj) {
-                console.log('tree onchange:', node, tree_obj)
-            },
-            onopen: function(node, tree_obj) {
-                console.log('tree onchange:', node, tree_obj)
-            }
-        }
+        closedIcon: "/images/f-icon.png"
     });
 }
 
@@ -111,6 +103,14 @@ function bindEvents() {
         getStudents(gid);
     });
     $('#form1 .next').on('click', function(e) {
+        treeNode = $('#tree').tree("getSelectedNode");
+        if (!treeNode || !treeNode.id) {
+            alert("请选择知识点");
+            return;
+        }
+        $('[name=kid]').val(treeNode.id);
+        console.log('kid:', treeNode.id);
+        config.knowledgeId = treeNode.id;
         getExamList();
     });
     //获取知识点id
@@ -196,19 +196,19 @@ function createStuList(data) {
  */
 function getExamList(exType, exLevel, pn) {
     console.log('getExamList');
-    var kid = config.knowledgeId,
+    var kid = config.knowledgeId || 1,
         exType = exType || config.exType,
         exLevel = exLevel || config.exLevel,
         pagenum = pn || config.pagenum,
-        listnum = config.listnum;
+        result_num = config.result_num;
     $.ajax({
-        url: '/exercise_assign/getProblems/' + kid + '/' + exType + '/' + exLevel + '/' + pagenum + '/' + listnum,
+        url: '/exercise_assign/getProblems/' + kid + '/' + exType + '/' + exLevel + '/' + pagenum + '/' + result_num,
         async: true,
         dataType: 'json',
         context: this,
         success: function(json) {
             console.log('请求题目列表数据成功：', json);
-            if (json && json.length > 0) {
+            if (json && json.problems) {
                 switchHomework(json);
             }
         },
@@ -220,25 +220,64 @@ function getExamList(exType, exLevel, pn) {
 }
 
 // 跳转到选择题目
-function switchHomework(data) {
-    data = data || [];
+function switchHomework(list) {
+    data = list.problems || [];
     var html = baidu.template('homework_list', {
         worklist: data
     });
     $('#main_wrapper').html(html);
     //初始分页组件
-    initPage();
+    initPage(list.listnum);
     //初始化状态
     initStatus();
     //绑定页面事件
     bindSelectWork();
 }
+
+function resetPubData() {
+    config.pubData = {
+        'sc': {
+            name: '单选',
+            num: 0,
+            eids: []
+        },
+        'mc': {
+            name: '多选',
+            num: 0,
+            eids: []
+        },
+        'jq': {
+            name: '判断',
+            num: 0,
+            eids: []
+        },
+        'bq': {
+            name: '填空',
+            num: 0,
+            eids: []
+        },
+        'sq': {
+            name: '问答',
+            num: 0,
+            eids: []
+        }
+    };
+    config.knowledgeId = 1;
+    // 题目类型
+    config.exType = 'sc';
+    // 题目难度级别
+    config.exLevel = 1;
+    // 页码
+    config.pagenum = 0;
+    // 单页返回结果数
+    config.result_num = 5;
+}
 //初始分页组件
-function initPage() {
+function initPage(totalnum) {
     var container = $("#homework-page");
     //分页组件页码数从1开始
     var opts = {
-        pageCount: 5,
+        pageCount: Math.ceil(totalnum / config.result_num),
         page: config.pagenum + 1,
         update: true
     };
@@ -379,6 +418,7 @@ function initPubPage() {
     });
     $('#form3 input.back').on('click', function(e) {
         console.log('#form3 input.back');
+        resetPubData();
         getExamList();
     });
 }
@@ -392,6 +432,7 @@ function pubWorkData() {
     $.post("/exercise_assign/publish", postdata,
         function(json) {
             console.log('发布作业成功：', json);
+            alert('发布作业成功!');
         }, "json");
 }
 /**

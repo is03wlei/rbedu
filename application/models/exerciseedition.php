@@ -43,6 +43,17 @@ class ExerciseEdition extends CI_Model{
 		return $resnum;
 	}
 	
+    public function get_exercise_count($kid,$etype,$elevel){
+		//get exercise count for one knowledge
+	
+		$this->_db->from('ExerciseInfo');
+		$this->_db->where('KID',$kid);
+        $this->_db->where('ExerciseType',$etype);
+        $this->_db->where('ExerciseLevel',$elevel);
+		$resnum = $this->_db->count_all_results();
+		return $resnum;
+	}
+
 	public function get_exercise_by_limit_batch($kid, $etype, $elevel, $etarget, $rn, $pn){
 		//get exercise pages for given kid and limitation
 		

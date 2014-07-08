@@ -1,5 +1,6 @@
 {%extends file='layout.tpl'%}
 {%block name="page-css"%}
+<link rel="stylesheet" type="text/css" href="../css/jqtree.css" />
 <link rel="stylesheet" type="text/css" href="../css/material.css" />
 <link rel="stylesheet" type="text/css" href="../css/webuploader.css" />
 {%/block%}
@@ -23,7 +24,11 @@
 	<div class="material-info">
 		<div class="knowledge">
 			<label>知识点结构</label>
-			<img src="../images/knowledge.png" />
+			<input type="hidden" name="kid"/>
+			<div id="file-error-tree" class="help-block" style="display:none;">
+					 请选择知识点
+			</div>
+			<div id="tree"></div>
 		</div>
 		<div class="material">
 			<span>资料名称：</span><input id="title" style="width:200px;" type="text" name="title" /><br /><br />
@@ -48,7 +53,13 @@
 	</div>
 {%/block%}
 {%block name="page-js"%}
+<script>
+	var knowlageData = {%$knowledgelist%};
+	console.log(knowlageData);
+</script>
 <script type="text/javascript" src="../js/webuploader.min.js"></script>
 <script type="text/javascript" src="../js/jquery.validate.min.js"></script>
+<script type="text/javascript" src="../js/tree.jquery.js"></script>
 <script type="text/javascript" src="../js/material-manage.js"></script>
+
 {%/block%}

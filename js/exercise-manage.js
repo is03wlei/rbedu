@@ -151,6 +151,15 @@ $(document).ready(
 			fileNameDesc = '';
 			$( '#'+file.id ).find('p.state').text('上传出错');
 		});
+		$('[name=ex-type]').change(function(){
+			var checkVal = $('[name=ex-type]:checked').attr('value');
+			if(checkVal == 'sq'){
+				$('.need-hide').hide();
+			}else{
+				$('.need-hide').show();
+			}
+		})
+		
 		
 		var submitExercise = function(submitType){
 			var knowledgeNode =  $('#tree').tree("getSelectedNode");
@@ -160,7 +169,54 @@ $(document).ready(
 			var exType = $('[name=ex-type]:checked').attr('value');
 			console.log(answerContent);
 			if(exType == 'sq'){
-				
+				if(knowledgeNode&&knowledgeNode.id&&fileNameDesc&&fileNameContent&&fileNameAnswer){
+					$('.help-block').hide();
+					console.log('succ');
+					//send Ajax
+					$.ajax({
+						cache: false,
+						type: "POST",
+						//url:"/ExerciseRecordJudge/ajax_exercises/"+gradeNo+"/"+classNo,
+						url:'/ExerciseEditControl/exercise_commit',
+						data:{exercisetype:exType,exerciselevel:$('[name=level-type]:checked').attr('value'),kid:knowledgeNode.id,exercisetitlepic:fileNameDesc,exercisecontentpic:fileNameContent,exerciseanswerpic:fileNameAnswer},	 
+						async: false,
+						error: function(request) {
+							console.log(request)
+							//alert("发送请求失败！");
+						},
+						success: function(data) {
+							var dataContent = JSON.parse(data);
+							if(dataContent&&dataContent.errorno ==0){
+								alert('成功');
+								location.reload();
+							}
+							console.log(dataContent);
+						}
+					});
+				}else{
+					if(!knowledgeNode){
+						$('#file-error-tree').show();
+					}else{
+						$('#file-error-tree').hide();
+					}
+					
+					if(!fileNameDesc){
+						$('#file-error-desc').show();
+					}else{
+						$('#file-error-desc').hide();
+					}
+					if(!fileNameContent){
+						$('#file-error-conten').show();
+					}else{
+						$('#file-error-content').hide();
+					}
+					if(!fileNameAnswer){
+						$('#file-error-answer').show();
+					}else{
+						$('#file-error-answer').hide();
+					}
+					
+				}
 			}else{
 				if(knowledgeNode&&knowledgeNode.id&&answerNum&&$.isNumeric(answerNum)&&answerContent&&fileNameDesc&&fileNameContent&&fileNameAnswer){
 					$('.help-block').hide();

@@ -73,15 +73,15 @@
 							 请选择文件
 					</div>
                 </dd>
-                <dt>答案个数</dt>
-                <dd>              
+                <dt class="need-hide">答案个数</dt>
+                <dd class="need-hide">              
                   <input class="ans-count" id="answer-num"></input>
 				  <div id="file-error-num" class="help-block" style="display:none;">
 						 请填写答案个数并只能填写数字
 				</div>
                 </dd>                
-                <dt>答案文本(用“;”分开)</dt>
-                <dd>              
+                <dt class="need-hide">答案文本(用“;”分开)</dt>
+                <dd class="need-hide">              
                   <textarea id="answer-content"></textarea>
 				  <div id="file-error-text" class="help-block" style="display:none;">
 						 请填写答案文本
