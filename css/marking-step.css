@@ -1,0 +1,62 @@
+.wizard{
+	width:726px;
+	height:52px;
+}
+.select{
+	font-size:16px;
+	margin-top:64px;
+	font-weight:bold;
+}
+.select select{
+	font-size:16px;
+	width:155px;
+}
+.task-list{
+	width:726px;
+	padding-top:55px;
+	padding-bottom:60px;
+	border-bottom:#cacaca 1px dotted;
+	
+}
+.task-list  label{
+	font-size:16px;
+	font-weight:bold;
+	line-height:30px;
+	margin-bottom:20px;
+	display:block;
+}
+.task-list table{border-right:1px solid #000;border-bottom:1px solid #000;font-size:14px;}
+.task-list table td {border-left:1px solid #000;border-top:1px solid #000;height:40px;text-align:center;}
+.task-list table th {border-left:1px solid #000;border-top:1px solid #000;height:40px;background-color:#fbcac7;}
+.btn-container{text-align:center;padding-top:20px;}
+.btn-container .return{
+	display:inline-block;
+	
+	height:36px;
+	font-size:16px;
+	font-weight:bold;
+}
+.btn-container .next{
+	display:inline-block;
+	
+	height:36px;
+	font-size:16px;
+	font-weight:bold;
+	color:#FFF;
+	background-color:#f5544b;
+	border:#f0423b 1px solid;
+	border-radius:3px;
+}
+.user-list{
+	float:left;
+}
+.user-list table td{border-top:1px dotted #000;}
+.user-list td:hover{
+	border-left:1px solid #000;border-top:1px solid #000;height:40px;text-align:center;background-color:#f5544b;cursor:pointer;
+}
+.task-info{width:570px;float:left;margin-left:15px;}
+.task-detail{border:#000 1px solid;border-radius:3px;}
+.task-header{background-color:#fbcac7;width:558px;font-size:14px;height:40px;line-height:40px;border-bottom:#000 1px solid;padding-left:10px;}
+.task-desc{width:478px;font-size:12px;margin:10px;padding:10px 30px 10px 40px;border-bottom:#cacaca 1px dotted;position:relative;line-height:20px;}
+.task-desc .tip{background-color:#fbcac7;position:absolute;top:10px;left:-3px;border-radius:3px;}
+.task-desc input{line-height:20px;border-radius:3px;}
