@@ -46,7 +46,7 @@ class Exercise_assign extends CI_Controller{
     {
         header("Content-type:text/html;charset=utf-8");
         $this->load->model('TSRelationshipMangement','tsrelationmanagement');
-        $result=$this->tsrelationmanagement->get_students_by_group_id(1);
+        $result=$this->tsrelationmanagement->get_students_by_group_id($GID);
         //var_dump($result);
         echo json_encode($result);
     }
